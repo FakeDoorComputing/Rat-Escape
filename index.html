@@ -16,37 +16,48 @@
   <body>
 
     <div data-role="page" id="titleScreen">
-      <img class="pics" id="pic" src="files/graphics/rat.png"/>
-      <img class="pics" id="left" src="files/graphics/leftRat.png"/>
-      <img class="pics" id="right" src="files/graphics/escape.png"/>
+      <a href="#welcomeScreen" data-transition="flip"><img alt="rat image" class="pics" id="pic" src="files/graphics/rat.png"/></a>
+      <img alt="rat" class="pics" id="left" src="files/graphics/leftRat.png"/>
+      <img alt="escape" class="pics" id="right" src="files/graphics/escape.png"/>
     </div>
 
     <div data-role="page" id="welcomeScreen">
-
+      <div id="difficulty">
+        <div id="welcomeText">
+          <h1>Welcome to Rat Escape!</h1>
+          <h3>Roland has found himself stuck in a maze.<br/>Help him find the way out before the door closes<br/><br/>Choose a difficulty to begin</h3>
+        </div>
+        <a href="#gameScreen" data-transition="flip"><img alt="easy button" id="easy" src="files/graphics/EasyButton.png"/></a><br/>
+        <a href="#gameScreen" data-transition="flip"><img alt="medium button" id="medium" src="files/graphics/MediumButton.png"/></a><br/>
+        <a href="#gameScreen" data-transition="flip"><img alt="hard button" id="hard" src="files/graphics/HardButton.png"/></a>
+      </div>
     </div>
 
     <div data-role="page" id="gameScreen">
+      <div data-role="header" data-position="fixed" id="header">
+        <p id="timeDisplay">Time :</p>
+        <p id="lifeDisplay">Lives :&nbsp;&nbsp;&nbsp;&nbsp;</p>
+      </div>
       <div id="container">
         <div id="gamebox">
           <canvas id="gameArea"></canvas>
         </div>
         <div id="righthand_side">
-          <div id="scorebox">
+  <!--        <div id="scorebox">
             <canvas id="scoreArea"></canvas>
             <div class="sound_button">
                 <input type="checkbox" value="0" id="sound_buttonInput" name="" checked />
                 <label for="sound_buttonInput"></label>
             </div>
           </div>
-          <div id="button_area">
-            <input id="resetGame" type="button" class="buttons" value="Reset Game"/>
-            <input id="resetLevel" type="button" class="buttons" value="Reset Level"/>
-            <input id="pauseGame" type="button" class="buttons" value="Pause Game"/>
-          </div>
-          <br><br><br>
-          <div id="logo_area">
-            <img src="files/graphics/ratLogo.png" width="500px" height="195px">
-          </div>
+-->
+        </div>
+      </div>
+      <div data-role="footer" data-position="fixed" id="footer">
+        <div id="button_area">
+          <img alt="reset game" id="reset_game" src="files/graphics/resetGameButton.png"/>
+          <img alt="reset level" id="reset_level" src="files/graphics/resetLevelButton.png"/>
+          <img alt="pause game" id="pause_game" src="files/graphics/pauseGameButton.png"/>
         </div>
       </div>
     </div>
@@ -68,11 +79,7 @@
             <div id="ok_but">
               <input id="ok" type="button" class="buttons" value="OK"/>
             </div>
-            <div id="difficulty">
-              <input id="easy" type="button" class="buttons" value="Easy"/>
-              <input id="medium" type="button" class="buttons" value="Medium"/>
-              <input id="hard" type="button" class="buttons" value="Hard"/>
-            </div>
+
           </div>
         </div>
       </div>

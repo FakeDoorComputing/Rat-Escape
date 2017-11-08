@@ -4,7 +4,6 @@
   position: fixed;
   display: inline-block;
   top: -1000%; bottom: 0;
-  color: green;
 }
 
 #pic
@@ -23,6 +22,55 @@
   width: 100%;
   margin: auto;
 }
+#welcomeScreen
+{
+  margin: auto;
+  border-color: skyblue;
+  background-color: skyblue;
+  border-radius: 10px;
+  text-align: center;
+}
+#welcomeScreen img
+{
+  margin: 0 auto !important;
+  padding-top: 5%;
+  padding-bottom: 5%;
+  display: block;
+  display: none;
+}
+#welcomeText
+{
+  display: none;
+}
+#header
+{
+  background-color: skyblue;
+}
+#timeDisplay
+{
+  padding-left: 5%;
+  display: inline-flex;
+  float: left;
+}
+#lifeDisplay
+{
+  padding-right: 5%;
+  display: inline-flex;
+  float: right;
+}
+#footer
+{
+  display: flex;
+  margin: auto;
+  background-color: skyblue;
+}
+#button_area
+{
+  margin: 0 auto;
+  padding: 1% 1% 1% 1%;
+}
+
+/*
 .textImage
 {
   z-index: 11;
@@ -47,13 +95,11 @@
 #final_score
 {
   top: 100%;
-  /*left: 500px;*/
   text-align: center;
 }
 #last_act
 {
   top: 100%;
-/*  left: 450px;*/
   text-align: center;
 }
 #end_ok
@@ -100,7 +146,7 @@
 
 /* all code relating to the css of the sound button is courtesy of
 https://paulund.co.uk/style-checkboxes-with-css with some minor alterations*/
-
+/*
 input[type=checkbox]
 {
 	visibility: hidden;
@@ -215,14 +261,7 @@ input[type=checkbox]
   margin-top: 5%;
   display: block;
 }
-#button_area
-{
-  z-index:0;
-  position:absolute;
-  display: inline-block;
-  margin-left: 4%;
-  width: 45%;
-}
+
 #logo_area
 {
   display: inline-block;
@@ -251,25 +290,4 @@ input[type=checkbox]
   background-color: #329932;
   border: 3px solid #198c19;
 }
-#easy
-{
-  margin-left: 0%;
-  position: relative;
-  display: inline-flex;
-  background-color:#329932;
-  border: 3px solid #198c19;
-}
-#medium
-{
-  position: relative;
-  display: inline-flex;
-  background-color:#9C8C42;
-  border: 3px solid #91782c;
-}
-#hard
-{
-  position: relative;
-  display: inline-flex;
-  background-color:#FF3232;
-  border: 3px solid #FF1919;
-}
+*/

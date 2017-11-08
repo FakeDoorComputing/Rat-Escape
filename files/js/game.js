@@ -30,9 +30,9 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
 
   var flag=0, speed=10, which=0, sprite=spriteUp, lives=3, sound=true, beep_end_flag=false, text_left, text_right, text_left_extra, text_right_extra;
   var game_canvas=document.getElementById("gameArea"); // puts the canvas into a variable
-  var score_canvas=document.getElementById("scoreArea");
+//  var score_canvas=document.getElementById("scoreArea");
   var cv1=game_canvas.getContext("2d"); // sets the context to 2d
-  var cv2=score_canvas.getContext("2d");
+//  var cv2=score_canvas.getContext("2d");
 
   // load sound effects in
   var beep=new Audio("files/sounds/beep.mp3"); // puts the sound file at the given file address into the named variable
@@ -132,8 +132,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
 
   screen_size(); // set the screen dimensions so the game works on different sized screens (up to a point..)
   splash_screen();  // run the splash/title screen
-  welcome_screen();
-  requestAnimationFrame(computeAndRender); // begin to run the game
+//  requestAnimationFrame(computeAndRender); // begin to run the game
 
 // the splash/title screen function ********************************************
 
@@ -141,17 +140,11 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
   {
     var splash=new Audio("files/sounds/intro.mp3"); // set the intro music
     splash.play(); // play the intro music
-/*    $("#container").hide(); // hide the box that contains the canvases
-    $("#whole_page").hide(); // hide the whole page blank-out
-    $("#inner_modal_box").hide(); // hide the inner box that contains the text for the blank-out box */
-    $("#pic").animate({top: "100px"},3000) // animate in the rat picture
-    $("#left").animate({top: "-400px"},4500) // animate in the left part of the text
-    $("#right").animate({top: "-200px"},4500) // animate in the right part of the text
-/*    $("#container").delay(6000).fadeIn(4000); // wait for 6 seconds then fade the canvases in
-    $("#whole_page").delay(6000).fadeIn(4000); // wait for six seconds then fade the blank-out box in
-    $("#inner_modal_box").delay(6000).fadeIn(4000); // wait for six seconds then fade the blank-out box text area in */
+    $("#pic").animate({top: "100px"},3000); // animate in the rat picture
+    $("#left").animate({top: "-400px"},4500); // animate in the left part of the text
+    $("#right").animate({top: "-200px"},4500); // animate in the right part of the text
     $("#pic").on("tap", function(){
-      $.mobile.navigate("#pauseScreen");
+      welcome_screen();
     })
   }
 
@@ -159,9 +152,29 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
 
     function welcome_screen()
     {
-      var head="Welcome to Rat Escape!"; // this will be passed to the blank screen function
-      var text="Escape the maze using the<br>arrow keys or W A S D.<br>Choose a difficulty to begin"
-      blank_screen("intro", head, text); // pass these parameters to the blank screen function
+      $(document).on("pagecreate","#welcomeScreen",function(){
+        $("#welcomeText").fadeIn(2000,function(){
+          $("#easy").fadeIn(1000,function(){
+            $("#medium").fadeIn(1000,function(){
+              $("#hard").fadeIn(1000);
+            });
+          });
+        });
+        $("#logo").fadeIn();
+        $("#easy").on("tap",function(){
+          diff_lev=1;
+          knock.play();
+          computeAndRender();
+        });
+        $("#medium").on("tap",function(){
+          diff_lev=2;
+          knock.play();
+        });
+        $("#hard").on("tap",function(){
+          diff_lev=3;
+          knock.play();
+        });
+      });
     }
 
   // end of welcome screen function ----------------------------------------------
@@ -350,7 +363,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
     cv1.rect(level[lev_num].exit[0],level[lev_num].exit[1],level[lev_num].exit[2],level[lev_num].exit[3]);
     cv1.fillStyle="rgb(0,255,0)";
     cv1.fill();
-
+/*
     // draw the second canvas (scoreboard)
     var thisLevel=lev_num+1; // add 1 to the zero-indexed lev_num
     cv2.clearRect(0,0,score_canvas.width,score_canvas.height); // clear the scoreboard canvas
@@ -380,6 +393,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
     cv2.fillText("Level "+thisLevel,20,190);
     cv2.fillText("Score "+score,20,240);
     cv2.drawImage(levelGfx,400,0);
+    */
   }
 
 // end of render function ------------------------------------------------------
@@ -584,10 +598,10 @@ function extra_life()
 
   function screen_size()
   {
-    game_canvas.width=600; // set the canvas width
-    game_canvas.height=550; // set the canvas height
-    score_canvas.width=520;
-    score_canvas.height=250;
+    game_canvas.width=100; // set the canvas width
+    game_canvas.height=50; // set the canvas height
+//    score_canvas.width=520;
+//    score_canvas.height=250;
     game_canvas.style.marginLeft="10%"; // set the canvas margin
     game_canvas.style.marginRight="auto";
 
@@ -600,7 +614,7 @@ function extra_life()
       "height":wp_h,
       "width":wp_w
     });
-    $("inner_modal_box").css( // set the height and width of the modal box
+/*    $("inner_modal_box").css( // set the height and width of the modal box
     {
       "height":wp_h,
       "width":wp_w
@@ -616,7 +630,7 @@ function extra_life()
 	text_left=middle-g_o_image_1+"px"; // left text position equals middle of the page, minus image length (add "px" on the end because that's the measurement)
 	text_right=middle+"px";
 	text_left_extra=middle-e_l_im_1+"px";
-	text_right_extra=middle+"px";
+	text_right_extra=middle+"px";*/
   }
 
 // end of screen size function -------------------------------------------------
