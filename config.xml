@@ -6,6 +6,8 @@
         id        = "rat.escape"
         version   = "0.0.2">
 
+    <icon src="icon.png" />
+
     <name>Rat Escape</name>
 
     <description>
