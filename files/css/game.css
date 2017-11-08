@@ -1,0 +1,275 @@
+.pics
+{
+  z-index: 1;
+  position: fixed;
+  display: inline-block;
+  top: -1000%; bottom: 0;
+  color: green;
+}
+
+#pic
+{
+  margin: auto;
+  right: 5%;
+  left: auto;
+}
+#left
+{
+  width: 100%;
+  margin: auto;
+}
+#right
+{
+  width: 100%;
+  margin: auto;
+}
+.textImage
+{
+  z-index: 11;
+  position: fixed;
+  display: inline-block;
+  top: 33%; bottom: 0;
+}
+#game_text, #extra_text
+{
+  left: -50%; right: 0;
+}
+#over_text, #life_text
+{
+  left: 120%; right: 0%;
+}
+.end_text
+{
+  position: fixed;
+  width: 100%;
+  display: inline-block;
+}
+#final_score
+{
+  top: 100%;
+  /*left: 500px;*/
+  text-align: center;
+}
+#last_act
+{
+  top: 100%;
+/*  left: 450px;*/
+  text-align: center;
+}
+#end_ok
+{
+  text-decoration: none;
+}
+#whole_page
+{
+  visibility: hidden;
+  width=100%;
+  height=100%;
+  position:absolute;
+	top: 0;
+	left: 0;
+  background-color:rgba(0,0,20,0.6);
+	z-index:2;
+}
+#inner_modal_box
+{
+  position: absolute;
+  background-color: rgb(153,153,255);
+  text-align:center;
+  font-family:Raleway;
+  font-size:30px;
+  height:550px;
+  width:600px;
+  margin-top: 1.6%;
+  margin-left: 5.6%;
+  border-radius:10px;
+  -moz-border-radius:10px;
+  -webkit-border-radius:10px;
+}
+.buttons
+{
+  z-index:0;
+  font-size: 20px;
+  text-align: center;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 10px;
+  color: #FFF;
+}
+
+/* all code relating to the css of the sound button is courtesy of
+https://paulund.co.uk/style-checkboxes-with-css with some minor alterations*/
+
+input[type=checkbox]
+{
+	visibility: hidden;
+}
+.sound_button
+{
+	width: 220px;
+	height: 40px;
+	background: #333;
+	margin: 20px 60px;
+	border-radius: 50px;
+	position: relative;
+  left:25%;
+}
+.sound_button:before
+{
+	content: 'Sound On';
+	position: absolute;
+	top: 12px;
+	left: 13px;
+	height: 2px;
+	color: #26ca28;
+	font-size: 16px;
+}
+.sound_button:after
+{
+	content: 'Sound Off';
+	position: absolute;
+	top: 12px;
+	left: 124px;
+	height: 2px;
+	color: #fff;
+	font-size: 16px;
+}
+.sound_button label
+{
+	display: block;
+	width: 100px;
+	height: 22px;
+	border-radius: 50px;
+	transition: all .5s ease;
+	cursor: pointer;
+	position: absolute;
+	top: 9px;
+	z-index: 1;
+	left: 12px;
+	background: #ddd;
+}
+.sound_button input[type=checkbox]:checked + label
+{
+	left: 110px;
+	background: #26ca28;
+}
+#resetGame
+{
+  z-index:0;
+  margin-left: 10%;
+  position: relative;
+  display: inline-flex;
+  background-color:#FF3232;
+  border: 3px solid #FF1919;
+}
+#resetLevel
+{
+  z-index:0;
+  position: relative;
+  display: inline-flex;
+  background-color:#9C8C42;
+  border: 3px solid #91782c;
+}
+#pauseGame
+{
+  z-index:0;
+  position: relative;
+  display: inline-flex;
+  background-color:#329932;
+  border: 3px solid #198c19;
+}
+#container
+{
+  display: flex;
+}
+#gamebox
+{
+  margin-top: 1%;
+  z-index:0;
+  width: 50%;
+}
+#gameArea
+{
+  z-index:0;
+  border: 1px solid black;
+  background-color: rgba(158, 167, 180, 0.8);
+  border-radius:10px;
+  display: block;
+}
+#righthand_side
+{
+  display: inline-block;
+  width: 45%;
+  float: left;
+}
+#scoreArea
+{
+  z-index:0;
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 520px;
+  height: 200px;
+  background-color: #fff123;
+  margin-left: 10%;
+  margin-top: 5%;
+  display: block;
+}
+#button_area
+{
+  z-index:0;
+  position:absolute;
+  display: inline-block;
+  margin-left: 4%;
+  width: 45%;
+}
+#logo_area
+{
+  display: inline-block;
+  margin-left: 10%;
+  width: 520px;
+  height: 250px;
+}
+#confirmButtons
+{
+  display: none;
+}
+#gameYes, #levelYes
+{
+  background-color: #FF3232;
+  color: rgb(0,0,0);
+  border: 3px solid #FF1919;
+}
+#gameNo, #levelNo
+{
+  background-color: #329932;
+  color: rgb(0,0,0);
+  border: 3px solid #198c19;
+}
+#ok
+{
+  background-color: #329932;
+  border: 3px solid #198c19;
+}
+#easy
+{
+  margin-left: 0%;
+  position: relative;
+  display: inline-flex;
+  background-color:#329932;
+  border: 3px solid #198c19;
+}
+#medium
+{
+  position: relative;
+  display: inline-flex;
+  background-color:#9C8C42;
+  border: 3px solid #91782c;
+}
+#hard
+{
+  position: relative;
+  display: inline-flex;
+  background-color:#FF3232;
+  border: 3px solid #FF1919;
+}

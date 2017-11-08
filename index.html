@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+
+  <head>
+    <title>Rat Escape</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+	  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="files/js/game.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Raleway|Ubuntu:bold" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="files/css/game.css">
+  </head>
+
+  <body>
+
+    <div data-role="page" id="titleScreen">
+      <img class="pics" id="pic" src="files/graphics/rat.png"/>
+      <img class="pics" id="left" src="files/graphics/leftRat.png"/>
+      <img class="pics" id="right" src="files/graphics/escape.png"/>
+    </div>
+
+    <div data-role="page" id="welcomeScreen">
+
+    </div>
+
+    <div data-role="page" id="gameScreen">
+      <div id="container">
+        <div id="gamebox">
+          <canvas id="gameArea"></canvas>
+        </div>
+        <div id="righthand_side">
+          <div id="scorebox">
+            <canvas id="scoreArea"></canvas>
+            <div class="sound_button">
+                <input type="checkbox" value="0" id="sound_buttonInput" name="" checked />
+                <label for="sound_buttonInput"></label>
+            </div>
+          </div>
+          <div id="button_area">
+            <input id="resetGame" type="button" class="buttons" value="Reset Game"/>
+            <input id="resetLevel" type="button" class="buttons" value="Reset Level"/>
+            <input id="pauseGame" type="button" class="buttons" value="Pause Game"/>
+          </div>
+          <br><br><br>
+          <div id="logo_area">
+            <img src="files/graphics/ratLogo.png" width="500px" height="195px">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-role="page" id="pauseScreen">
+      <div id="whole_page">
+        <div id="inner_modal_box">
+          <h1 id="modal_header"></h1>
+          <h3 id="modal_text"></h3>
+          <div id="confirmButtons">
+            <div id="yes_no_game">
+              <input id="gameYes" type="button" class="buttons" value="Yes"/>
+              <input id="gameNo" type="button" class="buttons" value="No"/>
+            </div>
+            <div id="yes_no_level">
+              <input id="levelYes" type="button" class="buttons" value="Yes"/>
+              <input id="levelNo" type="button" class="buttons" value="No"/>
+            </div>
+            <div id="ok_but">
+              <input id="ok" type="button" class="buttons" value="OK"/>
+            </div>
+            <div id="difficulty">
+              <input id="easy" type="button" class="buttons" value="Easy"/>
+              <input id="medium" type="button" class="buttons" value="Medium"/>
+              <input id="hard" type="button" class="buttons" value="Hard"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-role="page" id="endScreen">
+      <div id="gameOverText">
+        <img class="textImage" id="game_text" src="files/graphics/game.png"/>
+        <img class="textImage" id="over_text" src="files/graphics/over.png"/>
+        <img class="textImage" id="extra_text" src="files/graphics/extra.png"/>
+        <img class="textImage" id="life_text" src="files/graphics/life.png"/>
+        <h1 class="end_text" id="final_score"></h1>
+        <h1 class="end_text" id="last_act">Press <a id="end_ok" href="game.html">OK</a> to restart the game</h1>
+      </div>
+    </div>
+
+  </body>
+
+</html>
