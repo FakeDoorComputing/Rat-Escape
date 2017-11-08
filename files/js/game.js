@@ -7,6 +7,16 @@ var key_value="null", paused=0, full_time=[3600,2400,1200], lev_num=0, time=full
 var player={x:290,y:260,w:20,h:20}; // the player object
 var score=0, seconds, levelScore=0, diff_lev=0, highscore, levelGfx;
 
+// load sound effects in
+var beep=new Audio("files/sounds/beep.mp3"); // puts the sound file at the given file address into the named variable
+var beep_end=new Audio("files/sounds/beep_end.mp3");
+var scratch=new Audio("files/sounds/scratch.mp3");
+var knock=new Audio("files/sounds/knock.mp3");
+var lev_com=new Audio("files/sounds/level_complete.mp3");
+var win_sound=new Audio("files/sounds/win.mp3");
+var powerup=new Audio("files/sounds/powerup.mp3");
+var game_over=new Audio("files/sounds/gameOver.mp3")
+
 $(document).on("pagecreate","#titleScreen",function(){ // only runs this once the html page has loaded
 
 //  $("#gameOverText").hide(); // hide the game over text
@@ -34,15 +44,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
   var cv1=game_canvas.getContext("2d"); // sets the context to 2d
 //  var cv2=score_canvas.getContext("2d");
 
-  // load sound effects in
-  var beep=new Audio("files/sounds/beep.mp3"); // puts the sound file at the given file address into the named variable
-  var beep_end=new Audio("files/sounds/beep_end.mp3");
-  var scratch=new Audio("files/sounds/scratch.mp3");
-  var knock=new Audio("files/sounds/knock.mp3");
-  var lev_com=new Audio("files/sounds/level_complete.mp3");
-  var win_sound=new Audio("files/sounds/win.mp3");
-  var powerup=new Audio("files/sounds/powerup.mp3");
-  var game_over=new Audio("files/sounds/gameOver.mp3")
+
 
   // define level walls
   var level=[
@@ -714,42 +716,14 @@ function extra_life()
 
 // change buttons based on mouseover event *************************************
 
-$(document).on("mouseenter", "#pauseGame, #easy, #gameNo, #levelNo, #ok", function()
+$(document).on("tap", "#pause_game", function(){
+  knock.play();
+}).on("tap", "#reset_game", function()
 {
-  $(this).css(
-  {
-    "background-color":"#198c19"
-  })
-}).on("mouseleave", "#pauseGame, #easy, #gameNo, #levelno, #ok", function()
+  knock.play();
+}).on("tap", "#reset_level", function()
 {
-  $(this).css(
-  {
-    "background-color":"#329932"
-  })
-}).on("mouseenter", "#resetGame, #hard, #gameYes, #levelYes", function()
-{
-  $(this).css(
-  {
-    "background-color":"#FF1919"
-  })
-}).on("mouseleave", "#resetGame, #hard, #gameYes, #levelYes", function()
-{
-  $(this).css(
-  {
-    "background-color":"#FF3232"
-  })
-}).on("mouseenter", "#resetLevel, #medium", function()
-{
-  $(this).css(
-  {
-    "background-color":"#91782c"
-  })
-}).on("mouseleave", "#resetLevel, #medium", function()
-{
-  $(this).css(
-  {
-    "background-color":"#9C8C42"
-  })
+  knock.play();
 });
 
 // end of mouseover events -----------------------------------------------------
