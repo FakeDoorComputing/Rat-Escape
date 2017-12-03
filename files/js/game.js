@@ -15,8 +15,10 @@ var win_w,
     player={},
     cv1,
     game_canvas,
-    speed=10,
-    moveFlag,
+    speed=5,
+    movingFlag=false,
+    levelNum=1,
+    levelImg=0,
     direction;
 
 // load sprites and levels
@@ -38,6 +40,13 @@ mediGfx.src="files/graphics/Medium.png";
 hardGfx.src="files/graphics/Hard.png";
 level_1.src="files/graphics/level_1.png";
 
+// level array
+var level=[];
+level[0]=new Image();
+level[0].src="files/graphics/level_1.png";
+level[1]=new Image();
+level[1].src="files/graphics/level_2.png";
+
 // load sound effects in
 var beep=new Audio("files/sounds/beep.mp3"); // puts the sound file at the given file address into the named variable
 var beep_end=new Audio("files/sounds/beep_end.mp3");
@@ -55,7 +64,9 @@ var game_over=new Audio("files/sounds/gameOver.mp3")
 // var player={x:290,y:260,w:20,h:20}; // the player object
 // var score=0, seconds, levelScore=0, highscore, levelGfx;
 
+//$(document).on("pagecreate","#titleScreen",function(){ // only runs this once the html page has loaded
 $(document).on("pagecreate","#titleScreen",function(){ // only runs this once the html page has loaded
+
 
 // onload variables ************************************************************
 
@@ -64,7 +75,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
 
   screen_size(); // set the screen dimensions so the game works on different sized screens (up to a point..)
   splash_screen();  // run the splash/title screen
-
+  //computeAndRender(); // remove this for titles
 }); // end of onload function --------------------------------------------------
 
 // resize the canvases based on the size of the screen *************************
@@ -72,38 +83,46 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
 function screen_size()
 {
   win_w=$(window).width(); // get the width of the page (body)
-  win_h=screen.height; // get the height of the page (document)
+  win_h=$(window).height(); // get the height of the page (document)
   game_canvas.width=win_w; // set the size of the canvas width
   g_h=$("#header").height(); // get the height of the header
   game_h=win_h-g_h; // set the game height as the height of the page minus the height of the header
   game_canvas.height=game_h; // set the size of the canvas height
   $("#pauseButton").css({"width":"g_h", "height":"g_h"}) // change the size of the pause botton to match the header height
-  player={x:0,y:10,w:20,h:20} // find the middle of the game screen
+  initialPlayerPos(); // find the middle of the game screen
 }
+
+function initialPlayerPos(){
+  player={x:0,y:10,w:20,h:20}
+};
 
 // end of screen size function -------------------------------------------------
 
 // get input (for testing) Delete When movement implemented ********************
 
 $(document).on("tap", "#timeDisplay", function(){
-  direction="left";
-  moveFlag=true;
-  console.log("left");
+  if(!movingFlag){
+    direction="left";
+    movingFlag=true;
+  }
 });
 $(document).on("tap", "#fakeTime", function(){
-  direction="right";
-  moveFlag=true;
-  console.log("right");
+  if(!movingFlag){
+    direction="right";
+    movingFlag=true;
+  }
 });
 $(document).on("tap", "#lifeDisplay", function(){
-  direction="up";
-  moveFlag=true;
-  console.log("up");
+  if(!movingFlag){
+    direction="up";
+    movingFlag=true;
+  }
 });
 $(document).on("tap", "#fakeLife", function(){
-  direction="down";
-  moveFlag=true;
-  console.log("down");
+  if(!movingFlag){
+    direction="down";
+    movingFlag=true;
+  }
 });
 $(document).on("tap", "#pauseButton", function(){
   paused=true;
@@ -120,7 +139,6 @@ $(document).on("collapse", "#pausePanel", function(){
   {
     if(!paused) // run this if the game is not paused
     {
-      console.log(player.x+" "+player.y)
       compute(); // run the compute function
       render(); // run the render function
     }
@@ -132,62 +150,56 @@ $(document).on("collapse", "#pausePanel", function(){
 // compute function ************************************************************
 
   function compute(){
-    //console.log("compute")
 
     // using switch here because it's easier than an if....else statement
     switch(direction){
       case "left": // if keyvalue is left...
-        if(moveFlag)
+        if(movingFlag)
           player.x-=speed; // ...remove (speed) from player.x
         var checked=check();
-        if(checked!="null"){
+        if(checked){
           player.x+=speed;
         };
         //if(sound) // if sound is on...
         //  scratch.play(); // ...play the movement sound effect
-        if(player.x<0) // if player is against or further left than the left-hand wall...
-          player.x=0, direction="null" // flag=0; // ...set player.x to 0 (prevents going through the wall), set the direction to null (prevents the player continuously bashing the wall) and set the flag to 0 (lets the game know that the rat has stopped)
-        break; // end this cycle, go directly to the next code without evaluating the others in the switch
+        break;
 
       case "right":
-        if(moveFlag)
+        if(movingFlag)
           player.x+=speed;
         var checked=check();
-        if(checked!="null"){
+        if(checked){
           player.x-=speed;
         };
       //  if(sound)
     //      scratch.play();
-        if(player.x>win_w-player.w)
-          player.x=win_w-player.w, direction="null"// flag=0;
         break;
 
       case "up":
-        if(moveFlag)
+        if(movingFlag)
           player.y-=speed;
         var checked=check();
-        if(checked!="null"){
+        if(checked){
           player.y+=speed;
         };
       //  if(sound)
         //  scratch.play();
-        if(player.y<0)
-          player.y=0, direction="null";// flag=0;
         break;
 
       case "down":
-        if(moveFlag)
+        if(movingFlag)
           player.y+=speed;
         var checked=check();
-        if(checked!="null"){
+        if(checked){
           player.y-=speed;
         };
       //  if(sound)
     //      scratch.play();
-        if(player.y>game_h-player.h)
-          player.y=game_h-player.h, direction="null", moveFlag=false;
         break;
-    }}
+    };
+//    direction="null", moveFlag=false, movingFlag=false;//use this for debugging
+  };
+
 /*
     // countdown timer and time check
     if(!develop)
@@ -250,15 +262,12 @@ $(document).on("collapse", "#pausePanel", function(){
 
 // render function *************************************************************
 
-  function render()
-  {
-  //  console.log("render")
-    cv1.clearRect(0,0,game_canvas.width,game_canvas.height); // clear the game canvas
-    cv1.drawImage(level_1,0,0,win_w,game_h); // set the level image
-    cv1.fill(); // draw the level image
-    cv1.drawImage(playerSprite,player.x,player.y,player.w,player.h); // set the player image
-    cv1.fill(); // draw the player image
-
+function render(){
+  cv1.clearRect(0,0,game_canvas.width,game_canvas.height); // clear the game canvas
+  cv1.drawImage(level[levelImg],0,0,win_w,game_h); // set the level image
+  cv1.fill(); // draw the level image
+  cv1.drawImage(playerSprite,player.x,player.y,player.w,player.h); // set the player image
+  cv1.fill(); // draw the player image
     // iterate through the level object to draw the walls
 /*    var lev_len=level[lev_num].bl_x.length; // put the current levels object length into a variable 9doing it this way, outside of the loop, is apparently a bettter way of doing this)
     for(i=0;i<lev_len;i++) // iterate through the number of walls in the object
@@ -306,7 +315,7 @@ $(document).on("collapse", "#pausePanel", function(){
     cv2.fillText("Score "+score,20,240);
     cv2.drawImage(levelGfx,400,0);
     */
-  }
+}
 
 // end of render function ------------------------------------------------------
 /*
@@ -508,31 +517,39 @@ function extra_life()
 // end of high score save function ---------------------------------------------
 
 function check(){
+  var addXW=player.x+player.w, addYH=player.y+player.h;
   var topLeft=cv1.getImageData(player.x,player.y,1,1).data,
-      topRight=cv1.getImageData(player.x+player.w,player.y,1,1).data,
-      botLeft=cv1.getImageData(player.x,player.y+player.h,1,1).data,
-      botRight=cv1.getImageData(player.x+player.w,player.y+player.h,1,1).data;
+      topRight=cv1.getImageData(addXW,player.y,1,1).data,
+      botLeft=cv1.getImageData(player.x,addYH,1,1).data,
+      botRight=cv1.getImageData(addXW,addYH,1,1).data;
 
-  if(topLeft[0]==255&&topRight[0]==255||topRight[0]==255&&botRight[0]==255||botLeft[0]==255&&botRight[0]==255||botLeft[0]==255&&topLeft[0]==255){
-    moveFlag=false;
-    return "top";
+  if(topLeft[1]==255||topRight[1]==255||botRight[1]==255||botLeft[1]==255){
+    nextLevel();
+    return;
+  };
+
+  if(topLeft[0]==255&&topRight[0]==255||topRight[0]==255&&botRight[0]==255||botLeft[0]==255&&botRight[0]==255||botLeft[0]==255&&topLeft[0]==255||
+      topLeft[0]==255||topRight[0]==255||botRight[0]==255||botLeft[0]==255){
+    movingFlag=false;
+    return true;
+  }
+  if(player.x<0||player.x>win_w-player.w||player.y<0||player.y>game_h-player.h){
+    movingFlag=false;
+    return true;
   }
   else{
-    return "null";
+    return false;
   }
-  /*  if(topRight[0]==255&&botRight[0]==255){
-      moveFlag=false;
-      return "right";
-    };
-    if(botLeft[0]==255&&botRight[0]==255){
-      moveFlag=false;
-      return "bottom";
-    };
-    if(botLeft[0]==255&&topLeft[0]==255){
-      moveFlag=false;
-      return "left";
-    }*/
 };
+
+function nextLevel(){
+  if(levelNum<2){
+    levelImg++,levelNum++;
+    initialPlayerPos();
+  };
+  return;
+};
+
 
 // sound on / off toggle *******************************************************
 /*
