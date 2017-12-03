@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-	  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-	  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-    <script src="files/js/game.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Ubuntu:bold" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="files/css/game.css">
+	  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="files/js/welcome.js"></script>
+    <script src="files/js/game.js"></script>
   </head>
 
   <body>
@@ -34,32 +35,40 @@
     </div>
 
     <div data-role="page" id="gameScreen">
-      <div data-role="header" data-position="fixed" id="header">
-        <p id="timeDisplay">Time :</p>
-        <p id="lifeDisplay">Lives :&nbsp;&nbsp;&nbsp;&nbsp;</p>
+
+      <div data-role="panel" id="pausePanel" data-display="overlay">
+
       </div>
-      <div id="container">
+
+      <div data-role="header" data-position="fixed" id="header">
+        <a href="#pausePanel"><img id="pauseButton" src="files/graphics/pauseSmall.png"/></a>
+        <p class="headerText1" id="timeDisplay">Time :</p>
+        <p class="headerText1" id="fakeTime">59</p>
+        <p class="headerText1" id="lifeDisplay">Lives :</p>
+        <p class="headerText1" id="fakeLife">3</p>
+      </div>
+      <div id="container" data-role="main" class="ui-content">
         <div id="gamebox">
           <canvas id="gameArea"></canvas>
         </div>
-        <div id="righthand_side">
-  <!--        <div id="scorebox">
+  <!--      <div id="righthand_side">
+        <div id="scorebox">
             <canvas id="scoreArea"></canvas>
             <div class="sound_button">
                 <input type="checkbox" value="0" id="sound_buttonInput" name="" checked />
                 <label for="sound_buttonInput"></label>
             </div>
           </div>
--->
-        </div>
+
+        </div> -->
       </div>
-      <div data-role="footer" data-position="fixed" id="footer">
+<!--      <div data-role="footer" data-position="fixed" id="footer">
         <div id="button_area">
           <img alt="reset game" id="reset_game" src="files/graphics/resetGameButton.png"/>
           <img alt="reset level" id="reset_level" src="files/graphics/resetLevelButton.png"/>
           <img alt="pause game" id="pause_game" src="files/graphics/pauseGameButton.png"/>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <div data-role="page" id="pauseScreen">

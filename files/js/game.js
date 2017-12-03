@@ -1,11 +1,42 @@
 // game.js
 
-var develop=false; // use this to enter develop mode
+/*
+COPYRIGHT SYMON HAMBREY 2017
+ALL RIGHTS RESERVED
+*/
 
-// global variables ************************************************************
-var key_value="null", paused=0, full_time=[3600,2400,1200], lev_num=0, time=full_time[0], number_levels;
-var player={x:290,y:260,w:20,h:20}; // the player object
-var score=0, seconds, levelScore=0, diff_lev=0, highscore, levelGfx;
+// put global variables used here **********************************************
+
+var win_w,
+    win_h,
+    game_h,
+    diff_lev,
+    paused=false,
+    player={},
+    cv1,
+    game_canvas,
+    speed=10,
+    moveFlag,
+    direction;
+
+// load sprites and levels
+var spriteUp=new Image(); // creates an  placeholder
+var spriteDown=new Image();
+var spriteLeft=new Image();
+var spriteRight=new Image();
+var easyGfx=new Image();
+var mediGfx=new Image();
+var hardGfx=new Image();
+var level_1=new Image();
+spriteUp.src="files/graphics/ratUp.png"; // gives the placeholder a source
+spriteDown.src="files/graphics/ratDown.png";
+spriteLeft.src="files/graphics/ratLeft.png";
+spriteRight.src="files/graphics/ratRight.png";
+var playerSprite=spriteRight;
+easyGfx.src="files/graphics/Easy.png";
+mediGfx.src="files/graphics/Medium.png";
+hardGfx.src="files/graphics/Hard.png";
+level_1.src="files/graphics/level_1.png";
 
 // load sound effects in
 var beep=new Audio("files/sounds/beep.mp3"); // puts the sound file at the given file address into the named variable
@@ -17,176 +48,79 @@ var win_sound=new Audio("files/sounds/win.mp3");
 var powerup=new Audio("files/sounds/powerup.mp3");
 var game_over=new Audio("files/sounds/gameOver.mp3")
 
+// -----------------------------------------------------------------------------
+
+// var full_time=[3600,2400,1200], lev_num=0, time=full_time[0], number_levels;
+// var flag=0, which=0, sprite=spriteUp, lives=3, sound=true, beep_end_flag=false, text_left, text_right, text_left_extra, text_right_extra;
+// var player={x:290,y:260,w:20,h:20}; // the player object
+// var score=0, seconds, levelScore=0, highscore, levelGfx;
+
 $(document).on("pagecreate","#titleScreen",function(){ // only runs this once the html page has loaded
 
-//  $("#gameOverText").hide(); // hide the game over text
-//  $("end_text").hide(); // hide the end screen text
 // onload variables ************************************************************
-  // load sprites for player
-  var spriteUp=new Image(); // creates an  placeholder
-  var spriteDown=new Image();
-  var spriteLeft=new Image();
-  var spriteRight=new Image();
-  var easyGfx=new Image();
-  var mediGfx=new Image();
-  var hardGfx=new Image();
-  spriteUp.src="files/graphics/ratUp.png"; // gives the placeholder a source
-  spriteDown.src="files/graphics/ratDown.png";
-  spriteLeft.src="files/graphics/ratLeft.png";
-  spriteRight.src="files/graphics/ratRight.png";
-  easyGfx.src="files/graphics/Easy.png";
-  mediGfx.src="files/graphics/Medium.png";
-  hardGfx.src="files/graphics/Hard.png";
 
-  var flag=0, speed=10, which=0, sprite=spriteUp, lives=3, sound=true, beep_end_flag=false, text_left, text_right, text_left_extra, text_right_extra;
-  var game_canvas=document.getElementById("gameArea"); // puts the canvas into a variable
-//  var score_canvas=document.getElementById("scoreArea");
-  var cv1=game_canvas.getContext("2d"); // sets the context to 2d
-//  var cv2=score_canvas.getContext("2d");
-
-
-
-  // define level walls
-  var level=[
-  { // bl_x is the start x position, bl_y is the start y position, bl_sx is the length of x, bl_sy is the length of y and exit is where to place the exit
-    // level 1 - these levels can have any number of walls (up to about 4 billion!) so long as there are start positions and sizes for each
-	  bl_x:[270,320,100,100,240,320,440,440,50, 100,50, 50, 150,150,240,190,240,440,240,330,320,50, 390,440,240,100,0,  20, 290,50, 50, 90, 140,140,140,280,230,300,280,320,370,390,440,440,440,490,540,440,500,500,340,440,540],
-    bl_y:[200,200,150,200,200,200,200,150,10, 200,100,330,250,250,200,250,280,280,330,330,330,380,200,200,50, 50, 0,  540,10, 380,490,380,430,430,490,380,430,100,440,390,330,330,330,330,490,380,100,100,380,440,50, 50, 50],
-    bl_sx:[10,10, 300,100,30, 80, 100,60, 10, 10, 150,150,10, 50, 10, 10, 160,100,40, 70, 10, 280,10, 10, 10, 140,600,580,10, 10, 40, 10, 10, 100,260,10, 10, 100,40, 10, 10, 10, 60, 10, 160,10, 10, 100,40, 40,200, 10, 10],
-    bl_sy:[80,80, 10, 10, 10, 10, 10, 10, 330,90, 10, 10, 90, 10, 90, 80, 10, 10, 10, 10, 50, 10, 80, 80, 100, 10,10, 10, 100,120,10, 120,120,10, 10, 70, 60, 10, 10, 60, 160,160,10, 170,10, 70, 350,10, 10, 10, 10, 50, 50],
-    exit:[150,500,20,40]
-  },
-  {
-    // level 2 - the weird spacings on these levels are to help the author keep track of each wall
-    bl_x:[0,0,110,280,290,310,290,180,180,400,360,320,180,180,500,460,500,560,180,100,100,350,550,430,430,550,530],
-    bl_y:[130,220,170,250,250,250,360,300,400,300,400,370,130,170,170,120,120,250,500,30,30,100,100,450,500,450,0],
-    bl_sx:[100,100,50,10,20,10,50,10,100,10,50,10,10,40,10,40,10,40,10,90,10,80,50,10,120,10,10],
-    bl_sy:[10,10,10,60,10,60,10,100,10,70,10,60,100,10,50,10,20,10,50,10,30,10,10,50,10,60,30],
-    exit:[0,140,20,80]
-  },
-  {
-    // level 3
-    bl_x:[270,270,320,270,210,380,180,170,180,210,370,380,380,410,260,260,330,240,100,100,420,50, 0, 500,480,100,350,380,30,580,100,0],
-    bl_y:[280,250,250,200,200,200,100,100,130,100,100,100,130,100,500,500,530,70, 40, 400,380,100,20,0,  530,40, 200,530,530,170,380,100],
-    bl_sx:[60,10, 10, 60, 10, 10, 10, 60, 40, 10, 60, 10, 40, 10, 10, 60, 10, 40, 10, 40, 10, 10, 40,10, 30, 20, 40, 10, 10, 20, 10, 60],
-    bl_sy:[10,40, 40, 10, 60, 60, 40, 10, 10, 40, 10, 40, 10, 40, 50, 10, 20, 10, 60, 10, 40, 50, 10,40, 20, 10, 10, 20, 20, 10, 20, 10],
-    exit:[270,530,60,20]
-  },
-  {
-    // level 4
-    bl_x:[300,270,200,180,300,380,350,150,130,80, 70, 500,470,560,520,230,230,450,420,420,450,70, 170,20, 20,260,490,20],
-    bl_y:[0,  280,250,350,320,280,200,180,380,350,130,130,380,350,520,470,100,90, 450,480,450,500,20, 320,60,450,30, 100],
-    bl_sx:[10,60, 10, 60, 10, 10, 60, 10, 60, 10, 60, 10, 60, 10, 60, 10, 50, 10, 10, 40, 10, 60, 60, 10, 60,60, 70, 10],
-    bl_sy:[60,10, 60, 10, 60, 60, 10, 60, 10, 60, 10, 60, 10, 60, 10, 60, 10, 40, 30, 10, 30, 10, 10, 60, 10,10, 10, 60],
-    exit:[430,460,20,20]
-  },
-  {
-    // level 5
-    bl_x:[50 ,60 ,50 ,50 ,60 ,50 ,50, 120,130,130,130,130,130,140,210,200,210,210,210,220,210,290,300,290,290,290,300,300,370,360,370,370,370,370,370,450,450,450,450,440,450,450,520,530,530,530,530,530,530,370],
-    bl_y:[40, 120,200,270,360,450,510,40, 110,200,280,350,440,520,50, 120,200,280,360,440,520,280,200,120,40, 350,440,520,40, 110,200,280,370,440,520,40, 120,190,280,360,430,520,40, 120,200,280,360,440,510,540],
-    bl_sx:[20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 100],
-    bl_sy:[20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 10],
-    exit:[390,520,60,20]
-  },
-  {
-    // level 6
-    bl_x:[290,240,270,300,290,200,230,110,110,150,330,310,380,370,440,430,350,500,490,310,20, 50, 100,80, 180,100,130,50, 80, 300,440,520,500,100,270,20, 210,480,180],
-    bl_y:[280,260,200,230,140,170,90, 400,400,400,120,70, 100,150,130,170,140,150,20, 0,  50, 100,90, 180,240,220,300,280,500,490,310,200,470,450,400,380,520,350,20],
-    bl_sx:[10,30, 10, 30, 10, 30, 10, 10, 40, 10, 30, 10, 30, 10, 30, 10, 10, 30, 10, 10, 30, 10, 30, 10, 10, 30, 10, 30, 10, 30, 30, 30, 10, 30, 10, 30, 10, 10, 10],
-    bl_sy:[30,10, 30, 10, 30, 10, 30, 30, 10, 30, 10, 30, 10, 30, 10, 30, 30, 10, 30, 30, 10, 30, 10, 30, 30, 10, 30, 10, 30, 10, 10, 10, 30, 10, 30, 10, 30, 30, 30],
-    exit:[120,410,30,20]
-  },
-  {
-    // level 7
-    bl_x:[550, 270,500,200,0,  150,400,530,300,200,200,270,360,260,500,450,40, 40, 240],
-    bl_y:[30,  290,150,90, 70, 320,240,240,420,400,470,260,260,0,  450,520,450,190,160],
-    bl_sx:[100,100,100,10, 100,100,10, 100,100,10, 100,10, 10, 10, 10, 50, 10, 30, 10],
-    bl_sy:[10, 10, 10, 100,10, 10, 100,10, 10, 80, 10, 20, 20, 10, 80, 10, 70, 10, 40],
-    exit:[580,160,20,80]
-  },
-  {
-    // level 8
-    bl_x:[280,270,320,250,240,350,220,210,270,330,320,380,200,350,240,350,30, 30, 0,  300,560,520,520,30, 30, 30, 200,150,150,30, 30, 30, 200,150,150,30, 30, 30, 300,420,390,500,580,430,100,110,570,550,450,460,310,480,550,530],
-    bl_y:[280,250,250,200,200,200,500,460,460,500,460,460,80, 80, 80, 80, 50, 50, 110,0,  20, 20, 110,170,170,230,200,200,300,270,270,370,340,340,440,410,410,510,180,180,0,  200,200,340,320,140,150,300,280,400,380,440,410,530],
-    bl_sx:[40,10, 10, 100,10, 10, 50, 10, 10, 50, 10, 10, 50, 50, 10, 10, 50, 10, 120,10, 10, 50, 50, 10, 50, 50, 10, 50, 50, 10, 50, 50, 10, 50, 50, 10, 50, 50, 10, 10, 10, 20, 20, 20, 10, 20, 10, 20, 10, 20, 10, 10, 10, 20],
-    bl_sy:[10,70, 70, 10, 100,100,10, 90, 70, 10, 50, 50, 10, 10, 50, 50, 10, 60, 10, 110,100,10, 10, 60, 10, 10, 110,10, 10, 110,10, 10, 110,10, 10, 110,10, 10, 20, 20, 20, 10, 10, 10, 20, 10, 20, 10, 20, 10, 20, 20, 20, 10],
-    exit:[280,290,40,20]
-  },
-  {
-    // level 9
-    bl_x:[270,20, 90, 230,400,370,520,310,490,460,260,110,140,50, 230,100,300,300,520,530,400,20, 100],
-    bl_y:[50, 80, 30, 170,140,20, 50, 250,220,300,310,150,330,310,410,480,410,470,340,400,470,420,210],
-    bl_sx:[60,60, 60, 60, 60, 50, 60, 60, 60, 50, 60, 50, 60, 60, 50, 50, 50, 60, 50, 50, 60, 50, 50],
-    bl_sy:[60,60, 60, 60, 60, 50, 60, 60, 60, 50, 60, 50, 60, 60, 50, 50, 50, 60, 50, 50, 60, 50, 50],
-    exit:[320,300,40,10]
-  },
-  {
-    // level 10 - you can create more levels by creating more objects after this one
-    bl_x:[100,100,100,100,100,200,200,200,200,200,300,300,300,300,300,400,400,400,400,400,500,500,500,500,500,150,230,380,450,510,160,210,370,450,540,590,80, 130,220,350,460,530,20,120,280,360,440,510,30, 130,270,320,410,510,130,280,320,280],
-    bl_y:[100,200,300,400,500,100,200,300,400,500,100,200,300,400,500,100,200,300,400,500,100,200,300,400,500,260,240,280,210,210,430,450,420,470,470,250,140,160,120,120,110,190,20,80, 60, 60, 40, 20, 330,310,330,340,340,350,30, 30, 30, 60],
-    bl_sx:[10,10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 40, 10, 40],
-    bl_sy:[10,10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 40, 10],
-    exit:[280,40,40,20]
-  }
-  ]
-
-  number_levels=level.length; // find out how many levels there are, enabling more levels than are currently here
+  game_canvas=document.getElementById("gameArea"); // puts the canvas into a variable
+  cv1=game_canvas.getContext("2d"); // sets the context to 2d
 
   screen_size(); // set the screen dimensions so the game works on different sized screens (up to a point..)
   splash_screen();  // run the splash/title screen
-//  requestAnimationFrame(computeAndRender); // begin to run the game
 
-// the splash/title screen function ********************************************
+}); // end of onload function --------------------------------------------------
 
-  function splash_screen()
-  {
-    var splash=new Audio("files/sounds/intro.mp3"); // set the intro music
-    splash.play(); // play the intro music
-    $("#pic").animate({top: "100px"},3000); // animate in the rat picture
-    $("#left").animate({top: "-400px"},4500); // animate in the left part of the text
-    $("#right").animate({top: "-200px"},4500); // animate in the right part of the text
-    $("#pic").on("tap", function(){
-      welcome_screen();
-    })
-  }
+// resize the canvases based on the size of the screen *************************
 
-  // the welcome screen function *************************************************
+function screen_size()
+{
+  win_w=$(window).width(); // get the width of the page (body)
+  win_h=screen.height; // get the height of the page (document)
+  game_canvas.width=win_w; // set the size of the canvas width
+  g_h=$("#header").height(); // get the height of the header
+  game_h=win_h-g_h; // set the game height as the height of the page minus the height of the header
+  game_canvas.height=game_h; // set the size of the canvas height
+  $("#pauseButton").css({"width":"g_h", "height":"g_h"}) // change the size of the pause botton to match the header height
+  player={x:0,y:10,w:20,h:20} // find the middle of the game screen
+}
 
-    function welcome_screen()
-    {
-      $(document).on("pagecreate","#welcomeScreen",function(){
-        $("#welcomeText").fadeIn(2000,function(){
-          $("#easy").fadeIn(1000,function(){
-            $("#medium").fadeIn(1000,function(){
-              $("#hard").fadeIn(1000);
-            });
-          });
-        });
-        $("#logo").fadeIn();
-        $("#easy").on("tap",function(){
-          diff_lev=1;
-          knock.play();
-          computeAndRender();
-        });
-        $("#medium").on("tap",function(){
-          diff_lev=2;
-          knock.play();
-        });
-        $("#hard").on("tap",function(){
-          diff_lev=3;
-          knock.play();
-        });
-      });
-    }
+// end of screen size function -------------------------------------------------
 
-  // end of welcome screen function ----------------------------------------------
+// get input (for testing) Delete When movement implemented ********************
+
+$(document).on("tap", "#timeDisplay", function(){
+  direction="left";
+  moveFlag=true;
+  console.log("left");
+});
+$(document).on("tap", "#fakeTime", function(){
+  direction="right";
+  moveFlag=true;
+  console.log("right");
+});
+$(document).on("tap", "#lifeDisplay", function(){
+  direction="up";
+  moveFlag=true;
+  console.log("up");
+});
+$(document).on("tap", "#fakeLife", function(){
+  direction="down";
+  moveFlag=true;
+  console.log("down");
+});
+$(document).on("tap", "#pauseButton", function(){
+  paused=true;
+});
+$(document).on("collapse", "#pausePanel", function(){
+  paused=false;
+});
+
+// end of input ----------------------------------------------------------------
 
 // compute and render function *************************************************
 
   function computeAndRender()
   {
-    if(paused%2==0) // run this if the game is not paused
+    if(!paused) // run this if the game is not paused
     {
+      console.log(player.x+" "+player.y)
       compute(); // run the compute function
       render(); // run the render function
     }
@@ -197,56 +131,64 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
 
 // compute function ************************************************************
 
-  function compute()
-  {
+  function compute(){
+    //console.log("compute")
+
     // using switch here because it's easier than an if....else statement
-    switch(key_value)
-    {
+    switch(direction){
       case "left": // if keyvalue is left...
-        player.x-=speed; // ...remove (speed) from player.x
-        if(sound) // if sound is on...
-          scratch.play(); // ...play the movement sound effect
+        if(moveFlag)
+          player.x-=speed; // ...remove (speed) from player.x
+        var checked=check();
+        if(checked!="null"){
+          player.x+=speed;
+        };
+        //if(sound) // if sound is on...
+        //  scratch.play(); // ...play the movement sound effect
         if(player.x<0) // if player is against or further left than the left-hand wall...
-          player.x=0, key_value="null", flag=0; // ...set player.x to 0 (prevents going through the wall), set the key_value to null (prevents the player continuously bashing the wall) and set the flag to 0 (lets the game know that the rat has stopped)
-        var checked=obstacle(); // check to see if we've hit a wall
-        if(checked) // if we have hit a wall...
-          player.x=level[lev_num].bl_x[which]+level[lev_num].bl_sx[which], key_value="null", flag=0; // ...set player.x to the edge of the wall, key_value to null and the flag to 0
+          player.x=0, direction="null" // flag=0; // ...set player.x to 0 (prevents going through the wall), set the direction to null (prevents the player continuously bashing the wall) and set the flag to 0 (lets the game know that the rat has stopped)
         break; // end this cycle, go directly to the next code without evaluating the others in the switch
 
       case "right":
-        player.x+=speed;
-        if(sound)
-          scratch.play();
-        if(player.x>600-player.w)
-          player.x=600-player.w, key_value="null", flag=0;
-        var checked=obstacle();
-        if(checked)
-          player.x=level[lev_num].bl_x[which]-player.w, key_value="null", flag=0;
+        if(moveFlag)
+          player.x+=speed;
+        var checked=check();
+        if(checked!="null"){
+          player.x-=speed;
+        };
+      //  if(sound)
+    //      scratch.play();
+        if(player.x>win_w-player.w)
+          player.x=win_w-player.w, direction="null"// flag=0;
         break;
 
       case "up":
-        player.y-=speed;
-        if(sound)
-          scratch.play();
+        if(moveFlag)
+          player.y-=speed;
+        var checked=check();
+        if(checked!="null"){
+          player.y+=speed;
+        };
+      //  if(sound)
+        //  scratch.play();
         if(player.y<0)
-          player.y=0, key_value="null", flag=0;
-        var checked=obstacle();
-        if(checked)
-          player.y=level[lev_num].bl_y[which]+level[lev_num].bl_sy[which], key_value="null", flag=0;
+          player.y=0, direction="null";// flag=0;
         break;
 
       case "down":
-        player.y+=speed;
-        if(sound)
-          scratch.play();
-        if(player.y>550-player.h)
-          player.y=550-player.h, key_value="null", flag=0;
-        var checked=obstacle();
-        if(checked)
-          player.y=level[lev_num].bl_y[which]-player.h, key_value="null", flag=0;
+        if(moveFlag)
+          player.y+=speed;
+        var checked=check();
+        if(checked!="null"){
+          player.y-=speed;
+        };
+      //  if(sound)
+    //      scratch.play();
+        if(player.y>game_h-player.h)
+          player.y=game_h-player.h, direction="null", moveFlag=false;
         break;
-    }
-
+    }}
+/*
     // countdown timer and time check
     if(!develop)
       time--; // removes 1 from the time-counter (comment this out to turn time off)
@@ -264,7 +206,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
 // end of compute function -----------------------------------------------------
 
 // obstacle detection **********************************************************
-
+/*
   function obstacle()
   {
     var len=level[lev_num].bl_x.length; // put the number of walls in the current level into a variable
@@ -301,7 +243,8 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
         blank_screen("next_level", head, text);
       }
       return false; // default return if no wall or exit
-    }
+*/
+//    }
 
 // end of obstacle function ----------------------------------------------------
 
@@ -309,49 +252,15 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
 
   function render()
   {
+  //  console.log("render")
     cv1.clearRect(0,0,game_canvas.width,game_canvas.height); // clear the game canvas
-
-    // draw a grid for design purposes (remove or comment out when complete)
-    if(develop)
-    {
-    cv1.beginPath();
-    cv1.strokeStyle="rgb(255,255,255)";
-    for(i=0;i<60;i++)
-    {
-      cv1.moveTo(i*10,0);
-      cv1.lineTo(i*10,550);
-      cv1.stroke();
-    }
-    for(i=0;i<55;i++)
-    {
-      cv1.moveTo(0,i*10);
-      cv1.lineTo(600,i*10);
-      cv1.stroke();
-    }
-    cv1.closePath();
-    cv1.strokeStyle="black";
-    cv1.beginPath();
-    for(i=0;i<6;i++)
-    {
-      cv1.moveTo(i*100,0);
-      cv1.lineTo(i*100,550);
-      cv1.stroke();
-    }
-    for(i=0;i<6;i++)
-    {
-      cv1.moveTo(0,i*100);
-      cv1.lineTo(600,i*100);
-      cv1.stroke();
-    }
-    cv1.closePath();
-    }
-
-    // draw the player on the screen
-    cv1.drawImage(sprite,player.x,player.y,player.w,player.h);
-    cv1.fill();
+    cv1.drawImage(level_1,0,0,win_w,game_h); // set the level image
+    cv1.fill(); // draw the level image
+    cv1.drawImage(playerSprite,player.x,player.y,player.w,player.h); // set the player image
+    cv1.fill(); // draw the player image
 
     // iterate through the level object to draw the walls
-    var lev_len=level[lev_num].bl_x.length; // put the current levels object length into a variable 9doing it this way, outside of the loop, is apparently a bettter way of doing this)
+/*    var lev_len=level[lev_num].bl_x.length; // put the current levels object length into a variable 9doing it this way, outside of the loop, is apparently a bettter way of doing this)
     for(i=0;i<lev_len;i++) // iterate through the number of walls in the object
     {
       cv1.beginPath();
@@ -365,6 +274,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
     cv1.rect(level[lev_num].exit[0],level[lev_num].exit[1],level[lev_num].exit[2],level[lev_num].exit[3]);
     cv1.fillStyle="rgb(0,255,0)";
     cv1.fill();
+*/
 /*
     // draw the second canvas (scoreboard)
     var thisLevel=lev_num+1; // add 1 to the zero-indexed lev_num
@@ -399,7 +309,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
   }
 
 // end of render function ------------------------------------------------------
-
+/*
 // screen overlay function *****************************************************
   function blank_screen(reason,head,text)
   {
@@ -429,7 +339,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
         $("#yes_no_game").show();
         $("#confirmButtons").on("click", "#gameYes", function()
         {
-          time=full_time[diff_lev], player.x=290, player.y=260, key_value="null", paused=0, lev_num=0, lives=3, score=0;
+          time=full_time[diff_lev], player.x=290, player.y=260, paused=0, lev_num=0, lives=3, score=0;
           $("#whole_page").slideUp("slow");
           if(sound)
             knock.play();
@@ -452,7 +362,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
           if(sound)
             knock.play();
           if(lives>0)
-            time=full_time[diff_lev], player.x=290, player.y=260, key_value="null", paused=0, lives--;
+            time=full_time[diff_lev], player.x=290, player.y=260, paused=0, lives--;
           $("#whole_page").slideUp("slow");
         })
         $("#confirmButtons").on("click", "#levelNo", function() // returns to the game with no parameters changed
@@ -471,7 +381,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
         {
           if(sound)
             knock.play();
-          time=full_time[diff_lev], player.x=290, player.y=260, key_value="null", paused=0, beep_end_flag=false;
+          time=full_time[diff_lev], player.x=290, player.y=260, paused=0, beep_end_flag=false;
           $("#whole_page").slideUp("slow");
         })
         break;
@@ -485,7 +395,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
         {
           if(sound)
             knock.play();
-          time=full_time[diff_lev], player.x=290, player.y=260, key_value="null", paused=0, flag=0;
+          time=full_time[diff_lev], player.x=290, player.y=260,paused=0, flag=0;
           $("#whole_page").slideUp("slow");
         })
         break;
@@ -496,19 +406,20 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
         $(document).on("click", "#easy", function()
         {
           knock.play();
-          time=full_time[0], player.x=290, player.y=260, key_value="null", paused=0, flag=0, diff_lev=0, levelGfx=easyGfx;
+          time=full_time[0], player.x=290, player.y=260,
+           paused=0, flag=0, diff_lev=0, levelGfx=easyGfx;
           highscore=savescore("load"); // put the previous highscores into the variable highscore
           $("#whole_page").slideUp("slow");
         }).on("click","#medium",function()
         {
           knock.play();
-          time=full_time[1], player.x=290, player.y=260, key_value="null", paused=0, flag=0, diff_lev=1, levelGfx=mediGfx;
+          time=full_time[1], player.x=290, player.y=260,paused=0, flag=0, diff_lev=1, levelGfx=mediGfx;
           highscore=savescore("load"); // put the previous highscores into the variable highscore
           $("#whole_page").slideUp("slow");
         }).on("click","#hard",function()
         {
           knock.play();
-          time=full_time[2], player.x=290, player.y=260, key_value="null", paused=0, flag=0, diff_lev=2, levelGfx=hardGfx;
+          time=full_time[2], player.x=290, player.y=260,  paused=0, flag=0, diff_lev=2, levelGfx=hardGfx;
           highscore=savescore("load"); // put the previous highscores into the variable highscore
           $("#whole_page").slideUp("slow");
         });
@@ -519,7 +430,7 @@ $(document).on("pagecreate","#titleScreen",function(){ // only runs this once th
 // end of screen overlay function ----------------------------------------------
 
 // extra life function *********************************************************
-
+/*
 function extra_life()
 {
   $("#gameOverText").show();
@@ -534,7 +445,7 @@ function extra_life()
 // end of extra life function --------------------------------------------------
 
 // gameover function ***********************************************************
-
+/*
   function gameover(reason)
   {
     switch(reason)
@@ -563,7 +474,7 @@ function extra_life()
 // end of gameover function ----------------------------------------------------
 
 // local storage for high score ************************************************
-
+/*
   function savescore(reason) // this will only work on non-MS products
   {
     if(reason=="load")
@@ -593,52 +504,38 @@ function extra_life()
       }
     }
   }
-
+*/
 // end of high score save function ---------------------------------------------
 
-// resize the canvases based on the size of the screen *************************
+function check(){
+  var topLeft=cv1.getImageData(player.x,player.y,1,1).data,
+      topRight=cv1.getImageData(player.x+player.w,player.y,1,1).data,
+      botLeft=cv1.getImageData(player.x,player.y+player.h,1,1).data,
+      botRight=cv1.getImageData(player.x+player.w,player.y+player.h,1,1).data;
 
-  function screen_size()
-  {
-    game_canvas.width=100; // set the canvas width
-    game_canvas.height=50; // set the canvas height
-//    score_canvas.width=520;
-//    score_canvas.height=250;
-    game_canvas.style.marginLeft="10%"; // set the canvas margin
-    game_canvas.style.marginRight="auto";
-
-
-
-    var wp_w=$(window).width(); // get the width of the page (body)
-    var wp_h=$(window).height(); // get the height of the page (document)
-    $("#whole_page").css( // set the height and width of the whole page
-    {
-      "height":wp_h,
-      "width":wp_w
-    });
-/*    $("inner_modal_box").css( // set the height and width of the modal box
-    {
-      "height":wp_h,
-      "width":wp_w
-    });
-
-	var img1=document.getElementById("game_text"); // get the 'game'
-	var img4=document.getElementById("extra_text"); // get the 'extra' image
-	var img3=document.getElementById("pic"); // get the rat image
-	var g_o_image_1=img1.width; // set the value of 'game over image 1' to the width of 'game'
-	var g_o_rat=img3.width;
-	var e_l_im_1=img4.width;
-	middle=wp_w/2; // find the middle of the page
-	text_left=middle-g_o_image_1+"px"; // left text position equals middle of the page, minus image length (add "px" on the end because that's the measurement)
-	text_right=middle+"px";
-	text_left_extra=middle-e_l_im_1+"px";
-	text_right_extra=middle+"px";*/
+  if(topLeft[0]==255&&topRight[0]==255||topRight[0]==255&&botRight[0]==255||botLeft[0]==255&&botRight[0]==255||botLeft[0]==255&&topLeft[0]==255){
+    moveFlag=false;
+    return "top";
   }
-
-// end of screen size function -------------------------------------------------
+  else{
+    return "null";
+  }
+  /*  if(topRight[0]==255&&botRight[0]==255){
+      moveFlag=false;
+      return "right";
+    };
+    if(botLeft[0]==255&&botRight[0]==255){
+      moveFlag=false;
+      return "bottom";
+    };
+    if(botLeft[0]==255&&topLeft[0]==255){
+      moveFlag=false;
+      return "left";
+    }*/
+};
 
 // sound on / off toggle *******************************************************
-
+/*
   $("#sound_buttonInput").click(function()
   {
     var onOff=document.getElementById("sound_buttonInput").checked;
@@ -654,7 +551,7 @@ function extra_life()
 // end of sound toggle function ------------------------------------------------
 
 // pause game function *********************************************************
-
+/*
   $("#pauseGame").click(function()
   {
     if(sound)
@@ -665,7 +562,7 @@ function extra_life()
 // end of pause game function --------------------------------------------------
 
 // reset game function *********************************************************
-
+/*
   $("#resetGame").click(function()
   {
     if(sound)
@@ -674,7 +571,7 @@ function extra_life()
   })
 
 // reset level function ********************************************************
-
+/*
   $("#resetLevel").click(function()
   {
     if(sound)
@@ -683,7 +580,7 @@ function extra_life()
   })
 
 // game ended functions *********************************************************
-
+/*
   function game_ended(reason)
   {
     $("#container").hide();
@@ -709,14 +606,14 @@ function extra_life()
       win_sound.play();
     }
   }
-
+*/
 // end of game ended functions --------------------------------------------------
 
-}) // end of onload function ----------------------------------------------------
+// });//); // end of onload function ----------------------------------------------------
 
 // change buttons based on mouseover event *************************************
-
-$(document).on("tap", "#pause_game", function(){
+///*
+/*$(document).on("tap", "#pause_game", function(){
   knock.play();
 }).on("tap", "#reset_game", function()
 {
@@ -725,5 +622,7 @@ $(document).on("tap", "#pause_game", function(){
 {
   knock.play();
 });
-
+$(document).on("tap", "#pauseButton", function(){
+});
+*/
 // end of mouseover events -----------------------------------------------------

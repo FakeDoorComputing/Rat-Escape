@@ -5,7 +5,6 @@
   display: inline-block;
   top: -1000%; bottom: 0;
 }
-
 #pic
 {
   margin: auto;
@@ -45,20 +44,48 @@
 #header
 {
   background-color: skyblue;
+  height: 3em;
 }
-#timeDisplay
+#header .ui-btn, .ui-btn-left, .ui-shadow
+{
+  background-color: #00000000;
+  border-color: #00000000;
+  position: inherit;
+  margin: 0;
+  top: 0;
+  left: 80%;
+  padding: 0 0;
+}
+#header .ui-shadow
+{
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+  -webkit-box-shadow: 0 0 0 rgba(0,0,0,0);
+}
+.headerText1
 {
   padding-left: 5%;
   display: inline-flex;
   float: left;
 }
-#lifeDisplay
+.headerText2
 {
-  padding-right: 5%;
+  padding-right: 40%;
   display: inline-flex;
   float: right;
 }
-#footer
+#pausePanel
+{
+  width: 100%;
+}
+#container
+{
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  position: fixed;
+}
+
+/*#footer
 {
   display: flex;
   margin: auto;
@@ -68,7 +95,7 @@
 {
   margin: 0 auto;
   padding: 1% 1% 1% 1%;
-}
+}*/
 
 /*
 .textImage
